@@ -24,3 +24,11 @@ jobs:
        - uses: actions/checkout@v2
        - name: docker build
          run: docker build . --file Dockerfile --tag bs2backend:latest
+         
+  post:
+    needs: docker
+    runs-on: "ubuntu-latest"
+
+    steps:
+      - name: "Build & test"
+        run: curl -X POST http://193.191.176.98:9000/api/webhooks/9f138b5b-d892-45fd-834e-93a50347fddd
