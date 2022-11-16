@@ -1,5 +1,4 @@
-name: Back
-
+name: Backend
 
 
 on:
@@ -7,28 +6,52 @@ on:
     branches: [ "main" ]
 
 
+    tags:
+      - "v*"
   pull_request:
     branches: [ "main" ]
  
-
+    
 
 jobs:
-
-
-
+      
+      
+      
   docker:
-
 
     runs-on: ubuntu-latest
     steps:
-       - uses: actions/checkout@v2
-       - name: docker build
-         run: docker build . --file Dockerfile --tag bs2backend:latest
-         
+    - uses: actions/checkout@v3
+    -
+        name: Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD}}
+    -
+        name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+    -
+        name: Build and push
+        uses: docker/build-push-action@v3
+        with:
+          context: .
+          file: ./dockerfile
+          push: true
+          tags: ${{ secrets.DOCKER_USERNAME }}/bs2backend:latest   
+    
+ 
+      
   post:
     needs: docker
     runs-on: "ubuntu-latest"
 
     steps:
       - name: "Build & test"
-        run: curl -X POST http://193.191.176.98:9000/api/webhooks/9f138b5b-d892-45fd-834e-93a50347fddd
+        run: curl -X POST http://193.191.176.98:9000/api/webhooks/6cdc0e2e-d52f-4f55-8412-0899276bafe3
+
+      
+
+
+          
+          
